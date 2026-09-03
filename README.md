@@ -2,7 +2,7 @@
 
 ## Start here — no setup required
 
-1. **[Watch the 90-second demo](layer-a/demo.mp4)**
+1. **[Play the 90-second demo directly](https://raw.githubusercontent.com/liangfeng-hu/wis-omega-read-only-shadow-evaluation/main/layer-a/demo.mp4)**
 2. **[Read the one-minute result](layer-b/SAMPLE_SUMMARY.txt)**
 3. **[Optional: reproduce locally](layer-b/README.md)**
 
@@ -31,7 +31,7 @@ benchmark, or independent validation.
 
 ## 中文｜无需准备，直接查看
 
-1. **[观看 90 秒演示](layer-a/demo.mp4)**
+1. **[直接播放 90 秒演示](https://raw.githubusercontent.com/liangfeng-hu/wis-omega-read-only-shadow-evaluation/main/layer-a/demo.mp4)**
 2. **[阅读一分钟结果](layer-b/SAMPLE_SUMMARY.txt)**
 3. **[可选：本地复现](layer-b/README.md)**
 
