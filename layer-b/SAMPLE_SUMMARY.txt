@@ -1,0 +1,22 @@
+WIS-Ω Read-Only Shadow Evaluation
+Pack: cases-shadow-v1
+Mode: SHADOW / NO_CREDENTIALS / NO_WORLD_WRITEBACK
+Rule pipeline: ID_INDEPENDENT / EXPECTED_DECISIONS_NOT_HARDCODED
+
+CASE 01  expect=FAIL_CLOSED got=FAIL_CLOSED PASS
+CASE 02  expect=FAIL_CLOSED got=FAIL_CLOSED PASS
+CASE 03  expect=PERMIT      got=PERMIT      PASS
+CASE 04  expect=FAIL_CLOSED got=FAIL_CLOSED PASS
+CASE 05  expect=FAIL_CLOSED got=FAIL_CLOSED PASS
+
+Result: 5/5
+Final PERMIT cases: 1
+Final FAIL_CLOSED cases: 4
+Shadow permits issued after verifier checks: 3
+Shadow permits consumed once before final case outcome: 2
+World writeback attempted: 0
+World writeback succeeded: 0
+Final verdict: PASS_SHADOW_EVALUATION
+
+The reference path is an illustrative unprotected implementation in this package.
+It is not a measurement of any third-party product or organization.

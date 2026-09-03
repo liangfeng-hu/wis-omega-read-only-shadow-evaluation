@@ -1,0 +1,6 @@
+layer-b/out/
+__pycache__/
+*.pyc
+.env
+*.key
+*.pem

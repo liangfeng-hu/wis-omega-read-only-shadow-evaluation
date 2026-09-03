@@ -1,0 +1,20 @@
+WIS-OMEGA READ-ONLY SHADOW EVALUATION — EVALUATION NOTICE
+
+This material is provided only for private technical review and non-production
+Shadow evaluation. It does not grant a production-use, deployment,
+redistribution, sublicensing, certification, compliance, service-level, or
+procurement right. Do not place the package or its outputs into a production
+decision path.
+
+The package is designed to receive no credential or confidential production
+data. Do not add such data. The evaluator makes no network request and writes
+only to the operator-selected local output directory.
+
+The package is provided without warranty. Evaluation results apply only to the
+included frozen cases and declared local evaluator. They are not third-party
+validation and are not measurements of any external product or organization.
+
+中文：本材料只用于私下技术审阅和非生产 Shadow 评估，不授予生产使用、
+部署、再分发、认证、合规、采购或服务等级权利。请勿放入生产决策路径，
+也不要加入真实凭证、机密数据或生产流量。结果仅适用于随包冻结用例和本地
+判定器，不构成第三方验证或对任何外部产品的测量。

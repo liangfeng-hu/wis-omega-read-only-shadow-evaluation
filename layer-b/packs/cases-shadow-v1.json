@@ -1,0 +1,132 @@
+{
+  "schema": "wisomega.shadow-evaluation.v1",
+  "pack": "cases-shadow-v1",
+  "mode": "SHADOW",
+  "credentials_loaded": 0,
+  "world_writeback": 0,
+  "cases": [
+    {
+      "id": "01",
+      "scenario": "Agent claims verification, but no recomputable evidence is present",
+      "expected": "FAIL_CLOSED",
+      "agent_claim_verified": true,
+      "candidate": {
+        "identity": "shadow-subject",
+        "endpoint": "shadow://endpoint/update-record",
+        "effect": {"operation": "update_record", "target": "shadow://record/01", "value": "A"},
+        "recovery": {"operation": "restore", "target": "shadow://record/01", "strategy": "restore_previous_value"}
+      },
+      "bindings": {
+        "identity": "shadow-subject",
+        "endpoint": "shadow://endpoint/update-record",
+        "effect": {"operation": "update_record", "target": "shadow://record/01", "value": "A"},
+        "recovery": {"operation": "restore", "target": "shadow://record/01", "strategy": "restore_previous_value"}
+      },
+      "evidence": null,
+      "consumer_observations": [
+        {"effect": {"operation": "update_record", "target": "shadow://record/01", "value": "A"}}
+      ]
+    },
+    {
+      "id": "02",
+      "scenario": "Candidate exists, but identity, endpoint, effect or recovery binding is incomplete",
+      "expected": "FAIL_CLOSED",
+      "agent_claim_verified": true,
+      "candidate": {
+        "identity": "shadow-subject",
+        "endpoint": "shadow://endpoint/update-record",
+        "effect": {"operation": "update_record", "target": "shadow://record/02", "value": "B"},
+        "recovery": {"operation": "restore", "target": "shadow://record/02", "strategy": "restore_previous_value"}
+      },
+      "bindings": {
+        "identity": "shadow-subject",
+        "endpoint": "",
+        "effect": {"operation": "update_record", "target": "shadow://record/02", "value": "B"},
+        "recovery": {"operation": "restore", "target": "shadow://record/02", "strategy": "restore_previous_value"}
+      },
+      "evidence": {
+        "body": {"candidate_sha256": "3000483aca790a88ff942eb438fb15c94e1c262f765b1134eda52dfddd923c0b", "evidence_type": "shadow_recomputation", "observed": "candidate_complete"},
+        "sha256": "227ce1303478c9c235728a4cdc99be7e3f32e4cdd4db74785fc7d90a24172adb"
+      },
+      "consumer_observations": [
+        {"effect": {"operation": "update_record", "target": "shadow://record/02", "value": "B"}}
+      ]
+    },
+    {
+      "id": "03",
+      "scenario": "Evidence and all bindings are complete; one Shadow Permit is accepted once",
+      "expected": "PERMIT",
+      "agent_claim_verified": true,
+      "candidate": {
+        "identity": "shadow-subject",
+        "endpoint": "shadow://endpoint/update-record",
+        "effect": {"operation": "update_record", "target": "shadow://record/03", "value": "C"},
+        "recovery": {"operation": "restore", "target": "shadow://record/03", "strategy": "restore_previous_value"}
+      },
+      "bindings": {
+        "identity": "shadow-subject",
+        "endpoint": "shadow://endpoint/update-record",
+        "effect": {"operation": "update_record", "target": "shadow://record/03", "value": "C"},
+        "recovery": {"operation": "restore", "target": "shadow://record/03", "strategy": "restore_previous_value"}
+      },
+      "evidence": {
+        "body": {"candidate_sha256": "7b247e5b82f40ddbe760b4a2c7b771f6679c2bdebe32929d05891183e1030cb7", "evidence_type": "shadow_recomputation", "observed": "all_bindings_complete"},
+        "sha256": "bfe8d30e79b8746cd27019fd51890385ef6034e701e9e84731a888461ba04e2d"
+      },
+      "consumer_observations": [
+        {"effect": {"operation": "update_record", "target": "shadow://record/03", "value": "C"}}
+      ]
+    },
+    {
+      "id": "04",
+      "scenario": "The same single-use Permit is presented a second time",
+      "expected": "FAIL_CLOSED",
+      "agent_claim_verified": true,
+      "candidate": {
+        "identity": "shadow-subject",
+        "endpoint": "shadow://endpoint/update-record",
+        "effect": {"operation": "update_record", "target": "shadow://record/04", "value": "D"},
+        "recovery": {"operation": "restore", "target": "shadow://record/04", "strategy": "restore_previous_value"}
+      },
+      "bindings": {
+        "identity": "shadow-subject",
+        "endpoint": "shadow://endpoint/update-record",
+        "effect": {"operation": "update_record", "target": "shadow://record/04", "value": "D"},
+        "recovery": {"operation": "restore", "target": "shadow://record/04", "strategy": "restore_previous_value"}
+      },
+      "evidence": {
+        "body": {"candidate_sha256": "192df6d6ed228f69a577efe49c5d1729f7efe51097c8610b8c38e71fb2e7b7ca", "evidence_type": "shadow_recomputation", "observed": "all_bindings_complete"},
+        "sha256": "3c4bb46cec31ce779c2e391343601650b7515b40230c1f2e6263575c5a095f00"
+      },
+      "consumer_observations": [
+        {"effect": {"operation": "update_record", "target": "shadow://record/04", "value": "D"}},
+        {"effect": {"operation": "update_record", "target": "shadow://record/04", "value": "D"}}
+      ]
+    },
+    {
+      "id": "05",
+      "scenario": "Validation passes, but the independent consumer observes effect drift",
+      "expected": "FAIL_CLOSED",
+      "agent_claim_verified": true,
+      "candidate": {
+        "identity": "shadow-subject",
+        "endpoint": "shadow://endpoint/update-record",
+        "effect": {"operation": "update_record", "target": "shadow://record/05", "value": "APPROVED"},
+        "recovery": {"operation": "restore", "target": "shadow://record/05", "strategy": "restore_previous_value"}
+      },
+      "bindings": {
+        "identity": "shadow-subject",
+        "endpoint": "shadow://endpoint/update-record",
+        "effect": {"operation": "update_record", "target": "shadow://record/05", "value": "APPROVED"},
+        "recovery": {"operation": "restore", "target": "shadow://record/05", "strategy": "restore_previous_value"}
+      },
+      "evidence": {
+        "body": {"candidate_sha256": "6e5350d748792928835a9b52905e0c84598159cf4835825c1a9d707083a0cd3d", "evidence_type": "shadow_recomputation", "observed": "validation_complete"},
+        "sha256": "a21bab7f1cd34e3a0c5ac0541bc553ca627ba00ed78c0c0805df231715d88e51"
+      },
+      "consumer_observations": [
+        {"effect": {"operation": "update_record", "target": "shadow://record/05", "value": "DRIFTED"}}
+      ]
+    }
+  ]
+}

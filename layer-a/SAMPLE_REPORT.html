@@ -1,0 +1,378 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; base-uri 'none'; form-action 'none'">
+<title>WIS-Ω Read-Only Shadow Evaluation</title><style>
+:root{--bg:#07131f;--panel:#102235;--line:#29465f;--text:#f4f8fb;--muted:#b7c6d4;--green:#58dda0;--amber:#ffd166;--red:#ff7b7b;--blue:#67c8ff}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:16px/1.55 system-ui,sans-serif}main{max-width:1100px;margin:auto;padding:34px 22px 60px}h1{font-size:clamp(2rem,5vw,3.6rem);line-height:1.05;margin:.15em 0}.kicker{color:var(--blue);font-weight:800;letter-spacing:.08em}.banner{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:22px 0}.pill,.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px}.pill strong{display:block;color:var(--green);font-size:1.2rem}.score{font-size:3.4rem;font-weight:900;color:var(--green)}table{width:100%;border-collapse:collapse;background:var(--panel);border-radius:14px;overflow:hidden}th,td{text-align:left;vertical-align:top;padding:13px;border-bottom:1px solid var(--line)}th{color:var(--muted)}.risk{color:var(--red);font-weight:800}.hold{color:var(--amber);font-weight:800}.permit,.pass{color:var(--green);font-weight:800}small,.muted{color:var(--muted)}details{margin-top:24px}pre{white-space:pre-wrap;word-break:break-word;background:#040a10;padding:16px;border-radius:12px;max-height:520px;overflow:auto}@media(max-width:760px){.banner{grid-template-columns:1fr}table{font-size:.86rem}th,td{padding:8px}}
+</style></head><body><main>
+<div class="kicker">SHADOW / NO CREDENTIALS / WORLD WRITEBACK = 0</div>
+<h1>Agent action → bounded decision</h1>
+<p class="muted">Five frozen cases. One ID-independent predicate pipeline. No network, service, credential, or production effect.</p>
+<div class="banner"><div class="pill"><strong>5/5 PASS</strong>Frozen expected outcomes</div><div class="pill"><strong>1 final PERMIT</strong>Four final fail-closed cases</div><div class="pill"><strong>0 writebacks</strong>Attempted and succeeded</div></div>
+<section class="card" style="margin-bottom:20px"><h2>One rule pipeline for every candidate</h2><p>Recompute evidence → exactly bind identity, endpoint, effect and recovery → create a local single-use Shadow Permit → independently recalculate consumer effect → reject any missing input, replay or drift. Case IDs are labels only; expected decisions are test data, not a hardcoded oracle.</p></section>
+<table><thead><tr><th>Case</th><th>Scenario</th><th>Illustrative unprotected path</th><th>WIS-Ω decision</th><th>Check</th></tr></thead><tbody><tr><td>01</td><td>Agent claims verification, but no recomputable evidence is present</td><td><span class='risk'>ALLOW</span></td><td><span class='hold'>FAIL_CLOSED</span><br><small>RECOMPUTABLE_EVIDENCE_MISSING</small></td><td class='pass'>PASS</td></tr><tr><td>02</td><td>Candidate exists, but identity, endpoint, effect or recovery binding is incomplete</td><td><span class='risk'>ALLOW</span></td><td><span class='hold'>FAIL_CLOSED</span><br><small>BINDING_ENDPOINT_MISSING</small></td><td class='pass'>PASS</td></tr><tr><td>03</td><td>Evidence and all bindings are complete; one Shadow Permit is accepted once</td><td><span class='risk'>ALLOW</span></td><td><span class='permit'>PERMIT</span><br><small>BOUND_SINGLE_USE_SHADOW_PERMIT_ACCEPTED</small></td><td class='pass'>PASS</td></tr><tr><td>04</td><td>The same single-use Permit is presented a second time</td><td><span class='risk'>ALLOW_AGAIN</span></td><td><span class='hold'>FAIL_CLOSED</span><br><small>PERMIT_ALREADY_CONSUMED</small></td><td class='pass'>PASS</td></tr><tr><td>05</td><td>Validation passes, but the independent consumer observes effect drift</td><td><span class='risk'>ALLOW_DRIFT</span></td><td><span class='hold'>FAIL_CLOSED</span><br><small>CONSUMER_EFFECT_DRIFT</small></td><td class='pass'>PASS</td></tr></tbody></table>
+<section class="card" style="margin-top:20px"><h2>What this proves</h2><p>The packaged evaluator deterministically applies one ID-independent evidence, binding, single-use and consumer-recalculation pipeline to five frozen Shadow cases and produces hash-linked receipts.</p><h2>What this does not prove</h2><p>No third-party product was measured. No production runtime, credential, endpoint, physical single ingress or world writeback was tested. The local Permit is not a cryptographic or KMS/HSM-backed capability. This is not production readiness or independent validation.</p></section>
+<details><summary>Inspectable report JSON</summary><pre>{
+  &quot;case_count&quot;: 5,
+  &quot;case_id_semantic_branch_count&quot;: 0,
+  &quot;credentials_loaded&quot;: 0,
+  &quot;expected_decision_hardcoded_oracle&quot;: 0,
+  &quot;final_fail_closed_case_count&quot;: 4,
+  &quot;final_permit_case_count&quot;: 1,
+  &quot;final_receipt_sha256&quot;: &quot;949f74d5229dba5f1d959ff011d1cb117e78d5f85cc63564eaaa504403045266&quot;,
+  &quot;final_verdict&quot;: &quot;PASS_SHADOW_EVALUATION&quot;,
+  &quot;id_independent_predicate_pipeline&quot;: 1,
+  &quot;network_requests&quot;: 0,
+  &quot;pack&quot;: &quot;cases-shadow-v1&quot;,
+  &quot;pack_sha256&quot;: &quot;b9b35a0850668a0509d413750b005cc0d47066d142c869228deae5d49f2ee5a7&quot;,
+  &quot;pass_count&quot;: 5,
+  &quot;permit_consumed_shadow_count&quot;: 2,
+  &quot;permit_created_count&quot;: 3,
+  &quot;permit_cryptographic_capability&quot;: 0,
+  &quot;permit_kms_hsm_backed&quot;: 0,
+  &quot;permit_local_shadow_object_only&quot;: 1,
+  &quot;persistent_service_started&quot;: 0,
+  &quot;results&quot;: [
+    {
+      &quot;bindings_complete&quot;: 1,
+      &quot;candidate_sha256&quot;: &quot;a1ddb182dadeb09e6685dbb0fb889a6cd07d96caa890dcab99044138a293d3be&quot;,
+      &quot;case_id&quot;: &quot;01&quot;,
+      &quot;credentials_loaded&quot;: 0,
+      &quot;evidence_recomputable&quot;: 0,
+      &quot;expected&quot;: &quot;FAIL_CLOSED&quot;,
+      &quot;got&quot;: &quot;FAIL_CLOSED&quot;,
+      &quot;mode&quot;: &quot;SHADOW&quot;,
+      &quot;network_requests&quot;: 0,
+      &quot;passed&quot;: 1,
+      &quot;previous_receipt_sha256&quot;: &quot;0000000000000000000000000000000000000000000000000000000000000000&quot;,
+      &quot;receipt_sha256&quot;: &quot;a6dd68ee1841554cf0615413c3522b9ce40ba1c9f39deae8db4cee5b8b4edcfb&quot;,
+      &quot;reference_path&quot;: {
+        &quot;decision&quot;: &quot;ALLOW&quot;,
+        &quot;notice&quot;: &quot;ILLUSTRATIVE_UNPROTECTED_REFERENCE_NOT_THIRD_PARTY_MEASUREMENT&quot;,
+        &quot;reason&quot;: &quot;TRUSTS_AGENT_ASSERTION&quot;
+      },
+      &quot;scenario&quot;: &quot;Agent claims verification, but no recomputable evidence is present&quot;,
+      &quot;schema&quot;: &quot;wisomega.shadow-receipt.v1&quot;,
+      &quot;wis_omega&quot;: {
+        &quot;consumer&quot;: null,
+        &quot;decision&quot;: &quot;FAIL_CLOSED&quot;,
+        &quot;permit&quot;: null,
+        &quot;permit_consumed_shadow&quot;: 0,
+        &quot;permit_created&quot;: 0,
+        &quot;pipeline&quot;: [
+          {
+            &quot;faults&quot;: [
+              &quot;RECOMPUTABLE_EVIDENCE_MISSING&quot;
+            ],
+            &quot;pass&quot;: 0,
+            &quot;stage&quot;: &quot;EVIDENCE_RECOMPUTATION&quot;
+          }
+        ],
+        &quot;reason&quot;: &quot;RECOMPUTABLE_EVIDENCE_MISSING&quot;,
+        &quot;world_writeback_attempted&quot;: 0,
+        &quot;world_writeback_succeeded&quot;: 0
+      },
+      &quot;world_writeback&quot;: 0
+    },
+    {
+      &quot;bindings_complete&quot;: 0,
+      &quot;candidate_sha256&quot;: &quot;3000483aca790a88ff942eb438fb15c94e1c262f765b1134eda52dfddd923c0b&quot;,
+      &quot;case_id&quot;: &quot;02&quot;,
+      &quot;credentials_loaded&quot;: 0,
+      &quot;evidence_recomputable&quot;: 1,
+      &quot;expected&quot;: &quot;FAIL_CLOSED&quot;,
+      &quot;got&quot;: &quot;FAIL_CLOSED&quot;,
+      &quot;mode&quot;: &quot;SHADOW&quot;,
+      &quot;network_requests&quot;: 0,
+      &quot;passed&quot;: 1,
+      &quot;previous_receipt_sha256&quot;: &quot;a6dd68ee1841554cf0615413c3522b9ce40ba1c9f39deae8db4cee5b8b4edcfb&quot;,
+      &quot;receipt_sha256&quot;: &quot;5fa31fd187a8756bc37415074ecc6628f53c920912f2aeef76bc12edab41cfe7&quot;,
+      &quot;reference_path&quot;: {
+        &quot;decision&quot;: &quot;ALLOW&quot;,
+        &quot;notice&quot;: &quot;ILLUSTRATIVE_UNPROTECTED_REFERENCE_NOT_THIRD_PARTY_MEASUREMENT&quot;,
+        &quot;reason&quot;: &quot;TRUSTS_AGENT_ASSERTION&quot;
+      },
+      &quot;scenario&quot;: &quot;Candidate exists, but identity, endpoint, effect or recovery binding is incomplete&quot;,
+      &quot;schema&quot;: &quot;wisomega.shadow-receipt.v1&quot;,
+      &quot;wis_omega&quot;: {
+        &quot;consumer&quot;: null,
+        &quot;decision&quot;: &quot;FAIL_CLOSED&quot;,
+        &quot;permit&quot;: null,
+        &quot;permit_consumed_shadow&quot;: 0,
+        &quot;permit_created&quot;: 0,
+        &quot;pipeline&quot;: [
+          {
+            &quot;faults&quot;: [],
+            &quot;pass&quot;: 1,
+            &quot;stage&quot;: &quot;EVIDENCE_RECOMPUTATION&quot;
+          },
+          {
+            &quot;faults&quot;: [
+              &quot;BINDING_ENDPOINT_MISSING&quot;
+            ],
+            &quot;pass&quot;: 0,
+            &quot;stage&quot;: &quot;EXACT_BINDING&quot;
+          }
+        ],
+        &quot;reason&quot;: &quot;BINDING_ENDPOINT_MISSING&quot;,
+        &quot;world_writeback_attempted&quot;: 0,
+        &quot;world_writeback_succeeded&quot;: 0
+      },
+      &quot;world_writeback&quot;: 0
+    },
+    {
+      &quot;bindings_complete&quot;: 1,
+      &quot;candidate_sha256&quot;: &quot;7b247e5b82f40ddbe760b4a2c7b771f6679c2bdebe32929d05891183e1030cb7&quot;,
+      &quot;case_id&quot;: &quot;03&quot;,
+      &quot;credentials_loaded&quot;: 0,
+      &quot;evidence_recomputable&quot;: 1,
+      &quot;expected&quot;: &quot;PERMIT&quot;,
+      &quot;got&quot;: &quot;PERMIT&quot;,
+      &quot;mode&quot;: &quot;SHADOW&quot;,
+      &quot;network_requests&quot;: 0,
+      &quot;passed&quot;: 1,
+      &quot;previous_receipt_sha256&quot;: &quot;5fa31fd187a8756bc37415074ecc6628f53c920912f2aeef76bc12edab41cfe7&quot;,
+      &quot;receipt_sha256&quot;: &quot;2360f8597502dba11c455185545f55c2f386de182fbfc4a1410e64aa4e7ff352&quot;,
+      &quot;reference_path&quot;: {
+        &quot;decision&quot;: &quot;ALLOW&quot;,
+        &quot;notice&quot;: &quot;ILLUSTRATIVE_UNPROTECTED_REFERENCE_NOT_THIRD_PARTY_MEASUREMENT&quot;,
+        &quot;reason&quot;: &quot;TRUSTS_AGENT_ASSERTION&quot;
+      },
+      &quot;scenario&quot;: &quot;Evidence and all bindings are complete; one Shadow Permit is accepted once&quot;,
+      &quot;schema&quot;: &quot;wisomega.shadow-receipt.v1&quot;,
+      &quot;wis_omega&quot;: {
+        &quot;consumer&quot;: {
+          &quot;accepted_attempts&quot;: 1,
+          &quot;attempts&quot;: [
+            {
+              &quot;attempt&quot;: 1,
+              &quot;decision&quot;: &quot;PERMIT&quot;,
+              &quot;reason&quot;: &quot;BOUND_SINGLE_USE_SHADOW_PERMIT_ACCEPTED&quot;
+            }
+          ],
+          &quot;decision&quot;: &quot;PERMIT&quot;,
+          &quot;permit_consumed_shadow&quot;: 1,
+          &quot;reason&quot;: &quot;BOUND_SINGLE_USE_SHADOW_PERMIT_ACCEPTED&quot;,
+          &quot;rejected_attempts&quot;: 0
+        },
+        &quot;decision&quot;: &quot;PERMIT&quot;,
+        &quot;permit&quot;: {
+          &quot;candidate_sha256&quot;: &quot;7b247e5b82f40ddbe760b4a2c7b771f6679c2bdebe32929d05891183e1030cb7&quot;,
+          &quot;cryptographic_capability&quot;: 0,
+          &quot;effect_sha256&quot;: &quot;6f5f60ef2a1c6b5e8bb9a7981c89670a22a95eb0fd0c0466345be8a1e4ce9b78&quot;,
+          &quot;endpoint_sha256&quot;: &quot;fc1bf56488ea9e6a345d0f7331cd49797fa8cdd57ee01d4d7ed597060069134e&quot;,
+          &quot;identity_sha256&quot;: &quot;dfbdd5a637c64baf69850d9d28a552c65438239e7b6a7f7bb659e490e8796441&quot;,
+          &quot;kms_backed&quot;: 0,
+          &quot;notice&quot;: &quot;LOCAL_SHADOW_OBJECT_NOT_A_CRYPTOGRAPHIC_OR_PRODUCTION_CAPABILITY&quot;,
+          &quot;permit_id&quot;: &quot;shadow-8e1c9b92bbfe05bf006cc6dd&quot;,
+          &quot;recovery_sha256&quot;: &quot;50a508e01d62a6d859a0c055bb34e65ddca8eaeb6ee6ab536af3bb56a01da2dc&quot;,
+          &quot;schema&quot;: &quot;wisomega.shadow-permit.v1&quot;,
+          &quot;shadow_only&quot;: 1,
+          &quot;signature&quot;: null,
+          &quot;single_use&quot;: 1,
+          &quot;world_writeback_authorized&quot;: 0
+        },
+        &quot;permit_consumed_shadow&quot;: 1,
+        &quot;permit_created&quot;: 1,
+        &quot;pipeline&quot;: [
+          {
+            &quot;faults&quot;: [],
+            &quot;pass&quot;: 1,
+            &quot;stage&quot;: &quot;EVIDENCE_RECOMPUTATION&quot;
+          },
+          {
+            &quot;faults&quot;: [],
+            &quot;pass&quot;: 1,
+            &quot;stage&quot;: &quot;EXACT_BINDING&quot;
+          },
+          {
+            &quot;pass&quot;: 1,
+            &quot;permit_id&quot;: &quot;shadow-8e1c9b92bbfe05bf006cc6dd&quot;,
+            &quot;stage&quot;: &quot;SHADOW_PERMIT_ISSUANCE&quot;
+          },
+          {
+            &quot;pass&quot;: 1,
+            &quot;reason&quot;: &quot;BOUND_SINGLE_USE_SHADOW_PERMIT_ACCEPTED&quot;,
+            &quot;stage&quot;: &quot;INDEPENDENT_CONSUMER_RECALCULATION_AND_SINGLE_USE&quot;
+          }
+        ],
+        &quot;reason&quot;: &quot;BOUND_SINGLE_USE_SHADOW_PERMIT_ACCEPTED&quot;,
+        &quot;world_writeback_attempted&quot;: 0,
+        &quot;world_writeback_succeeded&quot;: 0
+      },
+      &quot;world_writeback&quot;: 0
+    },
+    {
+      &quot;bindings_complete&quot;: 1,
+      &quot;candidate_sha256&quot;: &quot;192df6d6ed228f69a577efe49c5d1729f7efe51097c8610b8c38e71fb2e7b7ca&quot;,
+      &quot;case_id&quot;: &quot;04&quot;,
+      &quot;credentials_loaded&quot;: 0,
+      &quot;evidence_recomputable&quot;: 1,
+      &quot;expected&quot;: &quot;FAIL_CLOSED&quot;,
+      &quot;got&quot;: &quot;FAIL_CLOSED&quot;,
+      &quot;mode&quot;: &quot;SHADOW&quot;,
+      &quot;network_requests&quot;: 0,
+      &quot;passed&quot;: 1,
+      &quot;previous_receipt_sha256&quot;: &quot;2360f8597502dba11c455185545f55c2f386de182fbfc4a1410e64aa4e7ff352&quot;,
+      &quot;receipt_sha256&quot;: &quot;8bf06722ae8bfa24fb657f2a6a0171508a9b7cb89e6548d1a452df0b62f032dd&quot;,
+      &quot;reference_path&quot;: {
+        &quot;decision&quot;: &quot;ALLOW_AGAIN&quot;,
+        &quot;notice&quot;: &quot;ILLUSTRATIVE_UNPROTECTED_REFERENCE_NOT_THIRD_PARTY_MEASUREMENT&quot;,
+        &quot;reason&quot;: &quot;NO_SINGLE_USE_CONSUMPTION&quot;
+      },
+      &quot;scenario&quot;: &quot;The same single-use Permit is presented a second time&quot;,
+      &quot;schema&quot;: &quot;wisomega.shadow-receipt.v1&quot;,
+      &quot;wis_omega&quot;: {
+        &quot;consumer&quot;: {
+          &quot;accepted_attempts&quot;: 1,
+          &quot;attempts&quot;: [
+            {
+              &quot;attempt&quot;: 1,
+              &quot;decision&quot;: &quot;PERMIT&quot;,
+              &quot;reason&quot;: &quot;BOUND_SINGLE_USE_SHADOW_PERMIT_ACCEPTED&quot;
+            },
+            {
+              &quot;attempt&quot;: 2,
+              &quot;decision&quot;: &quot;FAIL_CLOSED&quot;,
+              &quot;reason&quot;: &quot;PERMIT_ALREADY_CONSUMED&quot;
+            }
+          ],
+          &quot;decision&quot;: &quot;FAIL_CLOSED&quot;,
+          &quot;permit_consumed_shadow&quot;: 1,
+          &quot;reason&quot;: &quot;PERMIT_ALREADY_CONSUMED&quot;,
+          &quot;rejected_attempts&quot;: 1
+        },
+        &quot;decision&quot;: &quot;FAIL_CLOSED&quot;,
+        &quot;permit&quot;: {
+          &quot;candidate_sha256&quot;: &quot;192df6d6ed228f69a577efe49c5d1729f7efe51097c8610b8c38e71fb2e7b7ca&quot;,
+          &quot;cryptographic_capability&quot;: 0,
+          &quot;effect_sha256&quot;: &quot;dc18f1b6fe16e7239c44cecc94a04bb7c5aa55acb36b30425e243730f81d5070&quot;,
+          &quot;endpoint_sha256&quot;: &quot;fc1bf56488ea9e6a345d0f7331cd49797fa8cdd57ee01d4d7ed597060069134e&quot;,
+          &quot;identity_sha256&quot;: &quot;dfbdd5a637c64baf69850d9d28a552c65438239e7b6a7f7bb659e490e8796441&quot;,
+          &quot;kms_backed&quot;: 0,
+          &quot;notice&quot;: &quot;LOCAL_SHADOW_OBJECT_NOT_A_CRYPTOGRAPHIC_OR_PRODUCTION_CAPABILITY&quot;,
+          &quot;permit_id&quot;: &quot;shadow-6ad8883c156c166ce423c276&quot;,
+          &quot;recovery_sha256&quot;: &quot;d8ec5cab005a52506789aaf97fa4737f463114478e746efd5eb774b0a27b2d6e&quot;,
+          &quot;schema&quot;: &quot;wisomega.shadow-permit.v1&quot;,
+          &quot;shadow_only&quot;: 1,
+          &quot;signature&quot;: null,
+          &quot;single_use&quot;: 1,
+          &quot;world_writeback_authorized&quot;: 0
+        },
+        &quot;permit_consumed_shadow&quot;: 1,
+        &quot;permit_created&quot;: 1,
+        &quot;pipeline&quot;: [
+          {
+            &quot;faults&quot;: [],
+            &quot;pass&quot;: 1,
+            &quot;stage&quot;: &quot;EVIDENCE_RECOMPUTATION&quot;
+          },
+          {
+            &quot;faults&quot;: [],
+            &quot;pass&quot;: 1,
+            &quot;stage&quot;: &quot;EXACT_BINDING&quot;
+          },
+          {
+            &quot;pass&quot;: 1,
+            &quot;permit_id&quot;: &quot;shadow-6ad8883c156c166ce423c276&quot;,
+            &quot;stage&quot;: &quot;SHADOW_PERMIT_ISSUANCE&quot;
+          },
+          {
+            &quot;pass&quot;: 0,
+            &quot;reason&quot;: &quot;PERMIT_ALREADY_CONSUMED&quot;,
+            &quot;stage&quot;: &quot;INDEPENDENT_CONSUMER_RECALCULATION_AND_SINGLE_USE&quot;
+          }
+        ],
+        &quot;reason&quot;: &quot;PERMIT_ALREADY_CONSUMED&quot;,
+        &quot;world_writeback_attempted&quot;: 0,
+        &quot;world_writeback_succeeded&quot;: 0
+      },
+      &quot;world_writeback&quot;: 0
+    },
+    {
+      &quot;bindings_complete&quot;: 1,
+      &quot;candidate_sha256&quot;: &quot;6e5350d748792928835a9b52905e0c84598159cf4835825c1a9d707083a0cd3d&quot;,
+      &quot;case_id&quot;: &quot;05&quot;,
+      &quot;credentials_loaded&quot;: 0,
+      &quot;evidence_recomputable&quot;: 1,
+      &quot;expected&quot;: &quot;FAIL_CLOSED&quot;,
+      &quot;got&quot;: &quot;FAIL_CLOSED&quot;,
+      &quot;mode&quot;: &quot;SHADOW&quot;,
+      &quot;network_requests&quot;: 0,
+      &quot;passed&quot;: 1,
+      &quot;previous_receipt_sha256&quot;: &quot;8bf06722ae8bfa24fb657f2a6a0171508a9b7cb89e6548d1a452df0b62f032dd&quot;,
+      &quot;receipt_sha256&quot;: &quot;949f74d5229dba5f1d959ff011d1cb117e78d5f85cc63564eaaa504403045266&quot;,
+      &quot;reference_path&quot;: {
+        &quot;decision&quot;: &quot;ALLOW_DRIFT&quot;,
+        &quot;notice&quot;: &quot;ILLUSTRATIVE_UNPROTECTED_REFERENCE_NOT_THIRD_PARTY_MEASUREMENT&quot;,
+        &quot;reason&quot;: &quot;NO_CONSUMER_RECALCULATION&quot;
+      },
+      &quot;scenario&quot;: &quot;Validation passes, but the independent consumer observes effect drift&quot;,
+      &quot;schema&quot;: &quot;wisomega.shadow-receipt.v1&quot;,
+      &quot;wis_omega&quot;: {
+        &quot;consumer&quot;: {
+          &quot;accepted_attempts&quot;: 0,
+          &quot;attempts&quot;: [
+            {
+              &quot;attempt&quot;: 1,
+              &quot;decision&quot;: &quot;FAIL_CLOSED&quot;,
+              &quot;reason&quot;: &quot;CONSUMER_EFFECT_DRIFT&quot;
+            }
+          ],
+          &quot;decision&quot;: &quot;FAIL_CLOSED&quot;,
+          &quot;permit_consumed_shadow&quot;: 0,
+          &quot;reason&quot;: &quot;CONSUMER_EFFECT_DRIFT&quot;,
+          &quot;rejected_attempts&quot;: 1
+        },
+        &quot;decision&quot;: &quot;FAIL_CLOSED&quot;,
+        &quot;permit&quot;: {
+          &quot;candidate_sha256&quot;: &quot;6e5350d748792928835a9b52905e0c84598159cf4835825c1a9d707083a0cd3d&quot;,
+          &quot;cryptographic_capability&quot;: 0,
+          &quot;effect_sha256&quot;: &quot;18b904d137442f3118947d963eca1da2dc7d1a508a7548a41285167f6e8826c0&quot;,
+          &quot;endpoint_sha256&quot;: &quot;fc1bf56488ea9e6a345d0f7331cd49797fa8cdd57ee01d4d7ed597060069134e&quot;,
+          &quot;identity_sha256&quot;: &quot;dfbdd5a637c64baf69850d9d28a552c65438239e7b6a7f7bb659e490e8796441&quot;,
+          &quot;kms_backed&quot;: 0,
+          &quot;notice&quot;: &quot;LOCAL_SHADOW_OBJECT_NOT_A_CRYPTOGRAPHIC_OR_PRODUCTION_CAPABILITY&quot;,
+          &quot;permit_id&quot;: &quot;shadow-6977e43d3d3fe522f3ba4452&quot;,
+          &quot;recovery_sha256&quot;: &quot;75e56a9fb99b1975c8bddf5e1fffd9b403774c100abb4846ea574c2c6e7562c0&quot;,
+          &quot;schema&quot;: &quot;wisomega.shadow-permit.v1&quot;,
+          &quot;shadow_only&quot;: 1,
+          &quot;signature&quot;: null,
+          &quot;single_use&quot;: 1,
+          &quot;world_writeback_authorized&quot;: 0
+        },
+        &quot;permit_consumed_shadow&quot;: 0,
+        &quot;permit_created&quot;: 1,
+        &quot;pipeline&quot;: [
+          {
+            &quot;faults&quot;: [],
+            &quot;pass&quot;: 1,
+            &quot;stage&quot;: &quot;EVIDENCE_RECOMPUTATION&quot;
+          },
+          {
+            &quot;faults&quot;: [],
+            &quot;pass&quot;: 1,
+            &quot;stage&quot;: &quot;EXACT_BINDING&quot;
+          },
+          {
+            &quot;pass&quot;: 1,
+            &quot;permit_id&quot;: &quot;shadow-6977e43d3d3fe522f3ba4452&quot;,
+            &quot;stage&quot;: &quot;SHADOW_PERMIT_ISSUANCE&quot;
+          },
+          {
+            &quot;pass&quot;: 0,
+            &quot;reason&quot;: &quot;CONSUMER_EFFECT_DRIFT&quot;,
+            &quot;stage&quot;: &quot;INDEPENDENT_CONSUMER_RECALCULATION_AND_SINGLE_USE&quot;
+          }
+        ],
+        &quot;reason&quot;: &quot;CONSUMER_EFFECT_DRIFT&quot;,
+        &quot;world_writeback_attempted&quot;: 0,
+        &quot;world_writeback_succeeded&quot;: 0
+      },
+      &quot;world_writeback&quot;: 0
+    }
+  ],
+  &quot;schema&quot;: &quot;wisomega.shadow-evaluation-report.v1&quot;,
+  &quot;world_writeback_attempted&quot;: 0,
+  &quot;world_writeback_succeeded&quot;: 0
+}</pre></details>
+</main></body></html>
